@@ -1,17 +1,32 @@
-<html></html>
-<head>
-    <title>Log In</title>
-    <link rel="stylesheet" href="input_form.css">
-</head>
-<body>
-    <div class="form">
-        <h1 class="title_card">LOGIN</h1>
-        <form class="detail_form" action="welcome.php">
-            <input type="text" class="input" name="username" placeholder="Username"><br>
-            <input type="text" class="input" name="password" placeholder="Password"><br>
-            <br>
-            <button class="register_button" type="submit">Login</button>
-        </form>
-    </div>
-</body>
-</html>
+<?php
+session_start();
+require 'config.php'; 
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+
+    $stmt = $conn->prepare("SELECT * FROM users WHERE username = ?");
+    $stmt->bind_param("s", $username);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows > 0) {
+        $user = $result->fetch_assoc();
+
+        if (password_verify($password, $user['password'])) {
+            $_SESSION['user_id'] = $user['id'];
+            $_SESSION['username'] = $user['username'];
+            header("Location: home.php"); 
+            exit;
+        } else {
+            echo "Invalid password.";
+        }
+    } else {
+        echo "No user found with that username.";
+    }
+
+    $stmt->close();
+    $conn->close();
+}
+?>
