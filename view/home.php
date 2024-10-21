@@ -5,7 +5,7 @@
 </head>
 <body>
     <div class="topbar">
-        <div class="storename">
+        <div class="bini buddies">
             <h2>store name</h2>
         </div>
         <div class="navbar">
